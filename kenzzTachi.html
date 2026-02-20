@@ -1,0 +1,3520 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="dynamicTitle">Jooo PanelLegal | Developer Cloud Solutions</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<style>
+:root {
+  --bg-main: #000024;
+  --bg-secondary: #1a1a20;
+  --bg-card: rgba(30, 30, 38, 0.6);
+  --primary: #6366f1;
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --accent: #38bdf8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --text-main: #f8fafc;
+  --text-muted: #64748b;
+  --border-color: rgba(59, 130, 246, 0.25);
+  --glass-effect: blur(20px);
+  --radius-std: 16px;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+
+body { 
+  font-family: 'Inter', sans-serif; 
+  background-color: var(--bg-main); 
+  color: var(--text-main); 
+  overflow-x: hidden; 
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, .font-heading { font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: -0.5px; }
+.font-mono { font-family: var(--font-mono); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; transition: var(--transition); border: none; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; }
+.hidden { display: none !important; }
+.fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.loader-overlay {
+  position: fixed; inset: 0; background: #0a0a0f; z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.loader-overlay.hidden-loader {
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+.text-indigo-400 { color: #818cf8; }
+.tracking-\[0\.3em\] { letter-spacing: 0.3em; }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+.page-section { display: none; opacity: 0; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.page-section.active-page { display: block; opacity: 1; }
+
+header {
+  position: fixed; top: 0; width: 100%; z-index: 50;
+  background: rgba(15, 15, 19, 0.8); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+}
+.navbar { height: 70px; display: flex; justify-content: space-between; align-items: center; }
+
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; position: relative; }
+.brand::before {
+  content: ''; position: absolute; inset: -8px -16px; background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  border-radius: 8px; opacity: 0; transition: 0.3s;
+}
+.brand:hover::before { opacity: 1; }
+.brand i { font-size: 1.5rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.brand span { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.nav-toggle { 
+  width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; 
+  border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: white; 
+  cursor: pointer; transition: var(--transition); border-radius: 12px; position: relative; overflow: hidden;
+}
+.nav-toggle::before {
+  content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--primary), var(--accent)); opacity: 0; transition: 0.3s;
+}
+.nav-toggle:hover::before { opacity: 0.1; }
+.nav-toggle:hover { border-color: var(--primary); transform: rotate(90deg); }
+.nav-toggle i { position: relative; z-index: 1; }
+
+.announcement-bar {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 12px 24px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.announcement-bar.show {
+  display: flex;
+}
+
+.announcement-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.announcement-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.announcement-text {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.announcement-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.announcement-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+.hero { min-height: 100vh; display: flex; align-items: center; padding-top: 80px; position: relative; overflow: hidden; }
+.hero::before {
+  content: ''; position: absolute; top: 20%; right: -10%; width: 500px; height: 500px; 
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%); 
+  filter: blur(60px); pointer-events: none; 
+}
+.hero-grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: 80px; align-items: center; position: relative; z-index: 1; }
+
+.hero-label {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 16px; background: rgba(99, 102, 241, 0.1); 
+  border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8;
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  margin-bottom: 24px; border-radius: 100px; width: fit-content;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.hero-text h1 { 
+  font-size: 4rem; line-height: 0.95; margin-bottom: 24px; 
+  background: linear-gradient(180deg, #fff 0%, #64748b 100%); 
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+  letter-spacing: -2px;
+}
+.hero-text p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px; line-height: 1.7; max-width: 520px; }
+
+.btn-cta {
+  padding: 18px 40px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #4f46e5); color: white;
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.5);
+  position: relative; overflow: hidden; border: none;
+}
+.btn-cta::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s;
+}
+.btn-cta:hover::before { left: 100%; }
+.btn-cta:hover { transform: translateY(-3px); box-shadow: 0 20px 50px -10px rgba(99, 102, 241, 0.6); }
+
+.btn-outline {
+  padding: 18px 40px; border-radius: 12px;
+  background: transparent; color: white;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  margin-left: 16px; position: relative; overflow: hidden;
+}
+.btn-outline::before {
+  content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(56, 189, 248, 0.1)); opacity: 0; transition: 0.3s;
+}
+.btn-outline:hover::before { opacity: 1; }
+.btn-outline:hover { border-color: rgba(99, 102, 241, 0.5); transform: translateY(-3px); }
+
+.hero-visual { 
+  position: relative; border-radius: 24px; overflow: hidden; 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  box-shadow: 0 25px 80px -20px rgba(0,0,0,0.8);
+  transform: perspective(1000px) rotateY(-5deg) rotateX(5deg); transition: 0.6s;
+}
+.hero-visual:hover { transform: perspective(1000px) rotateY(0) rotateX(0); }
+.hero-visual::before {
+  content: ''; position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to bottom, transparent 50%, rgba(15, 15, 19, 0.8) 100%);
+  pointer-events: none;
+}
+.hero-banner img { width: 100%; display: block; filter: grayscale(100%) contrast(1.1); transition: 0.8s; }
+.hero-visual:hover img { transform: scale(1.1); filter: grayscale(0%) contrast(1.0); }
+
+.features-section { padding: 120px 0; border-top: 1px solid var(--border-color); position: relative; }
+.features-section::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 200px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 60px; }
+
+.feature-card {
+  padding: 40px 30px; background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: 20px; transition: var(--transition); position: relative; overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+.feature-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0; transition: 0.3s;
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-card:hover { 
+  border-color: rgba(99, 102, 241, 0.3); 
+  transform: translateY(-10px); 
+  box-shadow: 0 20px 60px -20px rgba(99, 102, 241, 0.3);
+}
+.feature-icon { 
+  width: 60px; height: 60px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(56, 189, 248, 0.1)); 
+  display: flex; align-items: center; justify-content: center; 
+  border-radius: 16px; color: var(--primary); font-size: 1.5rem; margin-bottom: 24px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+.feature-card h4 { font-size: 1.25rem; margin-bottom: 12px; color: white; }
+
+.store-nav { 
+  padding: 20px 0; display: flex; justify-content: space-between; align-items: center;
+  margin-top: 90px; margin-bottom: 30px; 
+}
+.nav-actions { display: flex; gap: 12px; }
+
+.packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; padding-bottom: 100px; }
+
+.product-card {
+  background: linear-gradient(145deg, rgba(30, 30, 38, 0.9), rgba(20, 20, 25, 0.9));
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 24px; 
+  padding: 32px; 
+  position: relative; 
+  transition: var(--transition);
+  display: flex; flex-direction: column;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+.product-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0; transition: 0.3s;
+}
+.product-card:hover::before { opacity: 1; }
+.product-card:hover { 
+  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-8px); 
+  box-shadow: 0 30px 60px -20px rgba(99, 102, 241, 0.25);
+}
+
+.badge-best {
+  position: absolute; top: 20px; right: -35px;
+  background: linear-gradient(135deg, var(--primary), #4f46e5); color: white;
+  padding: 6px 40px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+  transform: rotate(45deg); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; color: white; letter-spacing: -0.5px; }
+.card-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+.card-price { font-size: 2.5rem; font-weight: 700; margin-bottom: 24px; color: white; display: flex; align-items: baseline; gap: 4px; font-family: 'Space Grotesk', sans-serif; letter-spacing: -1px;}
+.card-price small { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
+
+.card-specs {
+  margin-bottom: 28px; padding: 20px; background: rgba(0,0,0,0.3); 
+  border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);
+}
+.spec-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 12px; font-family: var(--font-mono); }
+.spec-row:last-child { margin-bottom: 0; }
+.spec-label { color: var(--text-muted); }
+.spec-val { color: white; font-weight: 600; }
+
+.btn-card {
+  width: 100%; padding: 16px; font-weight: 600;
+  background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);
+  transition: 0.3s; text-transform: uppercase; font-size: 0.85rem; border-radius: 12px;
+  margin-top: auto;
+}
+.btn-card:hover { 
+  background: linear-gradient(135deg, var(--primary), #4f46e5); 
+  color: white; border-color: transparent; 
+  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
+}
+
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: var(--transition);
+  padding: 20px;
+}
+.modal-backdrop.show { opacity: 1; visibility: visible; }
+
+.modal-panel {
+  background: linear-gradient(145deg, #1a1a20, #141418); 
+  border: 1px solid rgba(255,255,255,0.1);
+  width: 100%; max-width: 480px; 
+  padding: 40px; border-radius: 24px;
+  position: relative; 
+  box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8);
+  transform: scale(0.95); transition: transform 0.3s;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-backdrop.show .modal-panel { transform: scale(1); }
+
+.modal-panel::before {
+  content: ''; position: absolute; inset: 0; border-radius: 24px; padding: 1px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), transparent, rgba(56, 189, 248, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude; pointer-events: none;
+}
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;
+}
+.modal-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+.btn-close {
+  width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);
+  cursor: pointer; transition: 0.3s;
+}
+.btn-close:hover { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: var(--danger); transform: rotate(90deg); }
+
+.form-group { margin-bottom: 24px; }
+.form-label {
+  display: block; margin-bottom: 10px; font-size: 0.8rem; color: var(--text-muted); 
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+}
+.form-input {
+  width: 100%; padding: 16px 18px; background: rgba(0,0,0,0.4); 
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+  color: white; font-family: var(--font-mono); font-size: 1rem; transition: 0.3s;
+}
+.form-input:focus { border-color: var(--primary); background: rgba(0,0,0,0.6); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+.form-input.error { border-color: var(--danger); }
+.form-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.input-wrapper { position: relative; }
+.input-loader {
+  position: absolute; right: 16px; top: calc(50% - 10px);
+  width: 20px; height: 20px; border: 2px solid rgba(99, 102, 241, 0.2);
+  border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite;
+  display: none;
+}
+.input-wrapper.loading .input-loader { display: block; }
+.input-wrapper.loading .form-input { padding-right: 50px; }
+
+.validation-msg { 
+  font-size: 0.8rem; margin-top: 10px; color: var(--danger); display: none; 
+  align-items: center; gap: 6px;
+}
+.validation-msg.show { display: flex; }
+.validation-msg.success { color: var(--success); }
+
+.suggestions-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.suggestion-btn {
+  padding: 8px 16px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #818cf8; border-radius: 100px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+  font-family: var(--font-mono);
+}
+.suggestion-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+
+.product-summary {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(56, 189, 248, 0.05));
+  border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 16px;
+  padding: 20px; margin-bottom: 28px;
+}
+.product-summary h4 { color: var(--primary); font-size: 1.1rem; margin-bottom: 4px; }
+.product-summary p { color: var(--text-muted); font-size: 0.85rem; }
+
+.btn-submit {
+  width: 100%; padding: 18px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: white; font-weight: 600; border: none; font-size: 1rem;
+  position: relative; overflow: hidden; transition: 0.3s;
+}
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.5); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.payment-timer {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(56, 189, 248, 0.05)); 
+  border: 1px solid rgba(99, 102, 241, 0.3); 
+  padding: 16px; border-radius: 12px; margin-bottom: 24px;
+  color: #818cf8; font-size: 0.9rem; display: flex; 
+  align-items: center; gap: 12px; justify-content: center; font-weight: 600;
+}
+
+.qr-container {
+  background: white; padding: 20px; border-radius: 20px; 
+  width: 220px; height: 220px; margin: 0 auto 24px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+}
+.qr-container img { max-width: 100%; border-radius: 8px; }
+
+.amount-display { 
+  text-align: center; margin-bottom: 24px; 
+  font-family: var(--font-mono); font-size: 1.5rem; color: var(--primary); font-weight: 700;
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.payment-actions { display: flex; flex-direction: column; gap: 12px; }
+.btn-payment {
+  padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05); color: white; cursor: pointer; transition: 0.3s;
+  font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-payment:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+.btn-payment.primary { background: var(--primary); border-color: var(--primary); }
+.btn-payment.primary:hover { background: #4f46e5; }
+.btn-payment.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+.btn-payment.danger:hover { background: rgba(239, 68, 68, 0.1); }
+
+.checking-status {
+  text-align: center; padding: 20px; color: var(--primary); 
+  font-family: var(--font-mono); font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+
+.success-icon {
+  width: 80px; height: 80px; border-radius: 50%; 
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
+  border: 2px solid var(--success); display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; color: var(--success); font-size: 2rem;
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes scaleIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.data-grid {
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+  padding: 20px; margin-bottom: 24px;
+}
+.data-row { 
+  display: flex; justify-content: space-between; align-items: flex-start; 
+  padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  gap: 12px;
+}
+.data-row:last-child { border-bottom: none; }
+.data-label { color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; padding-top: 2px; }
+.data-value { 
+  font-family: var(--font-mono); color: white; font-weight: 600; 
+  display: flex; align-items: center; gap: 10px;
+  flex: 1; min-width: 0; word-break: break-all; justify-content: flex-end;
+}
+.btn-copy {
+  width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);
+  cursor: pointer; transition: 0.3s; flex-shrink: 0;
+}
+.btn-copy:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+.success-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.history-empty {
+  text-align: center; padding: 40px; color: var(--text-muted);
+}
+.history-item {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 20px; margin-bottom: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: 0.3s; cursor: pointer;
+}
+.history-item:hover { 
+  background: rgba(255,255,255,0.06); border-color: rgba(99, 102, 241, 0.3);
+  transform: translateX(5px);
+}
+.history-info h4 { color: white; margin-bottom: 4px; font-size: 1rem; }
+.history-info p { color: var(--text-muted); font-size: 0.8rem; }
+.history-price { 
+  background: rgba(99, 102, 241, 0.1); color: #818cf8;
+  padding: 8px 16px; border-radius: 100px; font-family: var(--font-mono);
+  font-weight: 600; font-size: 0.9rem;
+}
+.history-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; background: rgba(16, 185, 129, 0.1); color: var(--success);
+  border-radius: 100px; font-size: 0.75rem; margin-top: 8px;
+}
+
+.btn-clear-history {
+  width: 100%; padding: 16px; margin-top: 20px;
+  background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--danger); border-radius: 12px; cursor: pointer; transition: 0.3s;
+  font-weight: 600;
+}
+.btn-clear-history:hover { background: rgba(239, 68, 68, 0.2); }
+
+.alert-icon { font-size: 3rem; margin-bottom: 16px; }
+.alert-title { font-size: 1.5rem; margin-bottom: 8px; }
+.alert-message { color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; line-height: 1.6; }
+.alert-actions { display: flex; gap: 12px; }
+.alert-actions button { flex: 1; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
+.btn-alert-primary { background: var(--primary); color: white; }
+.btn-alert-primary:hover { background: #4f46e5; transform: translateY(-2px); }
+.btn-alert-secondary { background: rgba(255,255,255,0.1); color: white; }
+.btn-alert-secondary:hover { background: rgba(255,255,255,0.15); }
+
+.drawer {
+  position: fixed; top: 0; right: -350px; width: 320px; height: 100%;
+  background: linear-gradient(180deg, #1a1a20, #0f0f13); 
+  border-left: 1px solid rgba(255,255,255,0.1);
+  z-index: 60; padding: 32px; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer.open { right: 0; }
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 55;
+  opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px);
+}
+.drawer-overlay.open { opacity: 1; visibility: visible; }
+.drawer-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
+  padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.drawer-nav a {
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  color: var(--text-muted); text-decoration: none; border-radius: 12px;
+  margin-bottom: 8px; transition: 0.3s; font-weight: 500;
+}
+.drawer-nav a:hover { background: rgba(99, 102, 241, 0.1); color: white; }
+.drawer-nav i { color: var(--primary); width: 24px; }
+
+.toast {
+  position: fixed; top: 24px; right: 24px; z-index: 10000;
+  background: rgba(26, 26, 32, 0.95); padding: 20px 24px; border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; gap: 14px;
+  transform: translateX(150%); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(20px); box-shadow: 0 20px 60px -20px rgba(0,0,0,0.8);
+  max-width: 400px;
+}
+.toast.show { transform: translateX(0); }
+.toast-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.toast-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.toast-icon.error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.toast-icon.info { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+.toast-content h4 { font-size: 0.95rem; margin-bottom: 2px; }
+.toast-content p { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+.whatsapp-float {
+  position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
+  background: linear-gradient(135deg, #25d366, #128c7e); 
+  display: flex; align-items: center; justify-content: center; color: white; 
+  font-size: 28px; z-index: 40; transition: 0.3s; text-decoration: none; 
+  border-radius: 50%; box-shadow: 0 10px 30px -10px rgba(37, 211, 102, 0.5);
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 20px 40px -10px rgba(37, 211, 102, 0.6); }
+
+.server-info-box {
+  background: linear-gradient(145deg, rgba(30, 30, 38, 0.9), rgba(20, 20, 25, 0.9));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.server-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.server-info-row:first-child {
+  border-bottom: none;
+  padding: 4px 0;
+  margin-bottom: 8px;
+}
+
+.server-info-label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  min-width: 100px;
+}
+
+.server-info-value {
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+
+.duration-buttons-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.duration-btn {
+  padding: 6px 10px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.duration-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--primary);
+  color: white;
+}
+
+.duration-btn.active {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--primary);
+  color: white;
+}
+
+.btn-renew {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--success), #059669);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.btn-renew:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.5);
+}
+
+.server-info-panel {
+  background: linear-gradient(145deg, rgba(20, 20, 28, 0.95), rgba(15, 15, 22, 0.9));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 24px;
+  padding: 28px;
+  margin-bottom: 60px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid rgba(59, 130, 246, 0.5);
+}
+
+.server-info-panel::before {
+  content: ''; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.server-header {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.server-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.server-title i {
+  color: var(--primary);
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+}
+
+.status-indicator { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  padding: 10px 20px; 
+  background: rgba(0,0,0,0.4); 
+  border-radius: 12px; 
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  min-width: 180px;
+}
+
+.status-dot { 
+  width: 12px; 
+  height: 12px; 
+  border-radius: 50%; 
+  position: relative; 
+  flex-shrink: 0;
+}
+
+.status-dot::before { 
+  content: ''; 
+  position: absolute; 
+  inset: -4px; 
+  border-radius: 50%; 
+  border: 2px solid; 
+  opacity: 0; 
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; 
+}
+
+.status-dot.online { 
+  background: var(--success); 
+  box-shadow: 0 0 20px var(--success); 
+}
+
+.status-dot.online::before { 
+  border-color: var(--success); 
+}
+
+.status-dot.maintenance { 
+  background: var(--warning); 
+  box-shadow: 0 0 20px var(--warning); 
+  animation: pulse 2s infinite; 
+}
+
+.status-dot.maintenance::before { 
+  border-color: var(--warning); 
+}
+
+.status-dot.offline { 
+  background: var(--danger); 
+  box-shadow: 0 0 20px var(--danger); 
+}
+
+.status-dot.offline::before { 
+  border-color: var(--danger); 
+}
+
+@keyframes ping { 
+  75%, 100% { 
+    transform: scale(2); 
+    opacity: 0; 
+  } 
+}
+
+.status-text { 
+  font-size: 0.9rem; 
+  font-family: var(--font-mono); 
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.server-grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.server-card.compact {
+  padding: 20px;
+  background: rgba(15, 15, 20, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.server-card.compact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+
+.server-card.compact:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.25);
+  background: rgba(20, 20, 28, 0.8);
+}
+
+.server-card.compact .server-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  border: 1px solid;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.server-card.compact .server-card-icon.cpu { 
+  background: rgba(59, 130, 246, 0.15); 
+  color: #3b82f6; 
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.server-card.compact .server-card-icon.ram { 
+  background: rgba(16, 185, 129, 0.15); 
+  color: #10b981; 
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.server-card.compact .server-card-icon.disk { 
+  background: rgba(245, 158, 11, 0.15); 
+  color: #f59e0b; 
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.server-card.compact .server-card-icon.os { 
+  background: rgba(139, 92, 246, 0.15); 
+  color: #8b5cf6; 
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.server-card.compact .server-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.server-card.compact .server-card-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.server-card.compact .server-card-value {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.server-card.compact .server-card-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: auto;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.server-footer {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.server-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.server-stat {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.server-stat i {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.server-stat:last-child i {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 20px;
+}
+
+.nav-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+  min-width: 90px;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.nav-btn.home:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  box-shadow: 0 8px 20px -10px rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+}
+
+.nav-btn.history:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: #6366f1;
+  box-shadow: 0 8px 20px -10px rgba(99, 102, 241, 0.4);
+  color: #818cf8;
+}
+
+.nav-btn.renew {
+  background: rgba(16, 185, 129, 0.1);
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.nav-btn.renew:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  box-shadow: 0 8px 20px -10px rgba(16, 185, 129, 0.4);
+}
+
+@media (max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+  .hero-text h1 { font-size: 2.8rem; }
+  .hero-text p { margin: 0 auto 30px; }
+  .btn-outline { margin-left: 0; margin-top: 12px; width: 100%; }
+  .btn-cta { width: 100%; }
+  .features-grid { grid-template-columns: 1fr; }
+  
+  .server-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .server-card.compact {
+    padding: 16px;
+    min-height: 120px;
+  }
+
+  .server-card.compact .server-card-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .server-card.compact .server-card-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .server-card.compact .server-card-value {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .server-card.compact .server-card-sub {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+  }
+
+  .server-card.compact .progress-bar {
+    height: 4px;
+  }
+
+  .server-stats {
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .stat-divider {
+    width: 100%;
+    height: 1px;
+    margin: 10px 0;
+  }
+
+  .server-stat {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .server-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .status-indicator {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .server-title {
+    font-size: 1.3rem;
+  }
+
+  .server-info-panel {
+    padding: 20px;
+  }
+
+  .server-info-box {
+    padding: 14px;
+    border-radius: 12px;
+  }
+  
+  .server-info-row {
+    padding: 6px 0;
+  }
+  
+  .server-info-label {
+    font-size: 0.7rem;
+  }
+  
+  .server-info-value {
+    font-size: 0.75rem;
+  }
+  
+  .duration-btn {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+  }
+  
+  .btn-renew {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+  
+  #renewModal .modal-panel {
+    max-width: 90%;
+    padding: 20px;
+  }
+  
+  .store-nav { flex-direction: column; gap: 20px; align-items: flex-start; }
+  .nav-actions { width: 100%; }
+  .nav-actions button { flex: 1; }
+  .packages-grid { grid-template-columns: 1fr; }
+  .modal-panel { padding: 24px; max-height: 95vh; }
+  .success-actions { grid-template-columns: 1fr; }
+  
+  .announcement-bar {
+    padding: 10px 16px;
+  }
+  
+  .announcement-text {
+    font-size: 0.8rem;
+  }
+  
+  .announcement-close {
+    width: 28px;
+    height: 28px;
+    margin-left: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .server-grid-container {
+    gap: 8px;
+  }
+  
+  .server-card.compact {
+    padding: 14px;
+    min-height: 110px;
+  }
+  
+  .server-card.compact .server-card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+  
+  #renewModal .modal-panel {
+    padding: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="loader-overlay" id="preloader">
+<div>
+  <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_w51pcehl.json" 
+                 background="transparent" 
+                 speed="1.5" 
+                 style="width: 200px; height: 200px;" 
+                 loop autoplay>
+  </lottie-player>
+</div>
+</div>
+
+<div class="loader-overlay hidden-loader" id="pageLoader">
+<div>
+  <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_w51pcehl.json" 
+                 background="transparent" 
+                 speed="1.5" 
+                 style="width: 160px; height: 160px;" 
+                 loop autoplay>
+  </lottie-player>
+</div>
+</div>
+
+<div class="announcement-bar" id="announcementBar">
+  <div class="announcement-content">
+    <div class="announcement-icon">
+      <i class="fas fa-bullhorn"></i>
+    </div>
+    <div class="announcement-text" id="announcementText"></div>
+  </div>
+  <button class="announcement-close" onclick="hideAnnouncement()" title="Tutup pengumuman">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<div class="drawer-overlay" onclick="toggleDrawer()"></div>
+<div class="drawer">
+<div class="drawer-header">
+  <h3 class="font-heading" style="font-size: 1.2rem; letter-spacing: 2px;">NAVIGATION</h3>
+  <button class="btn-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
+</div>
+<nav class="drawer-nav">
+  <a href="https://whatsapp.com/channel/0029VbBKVeuL7UVQI1lYpd3s" target="_blank">
+    <i class="fas fa-bullhorn"></i> 
+    <div>
+      <span style="display: block; font-weight: 600;">INFO UPDATE</span>
+      <small style="font-size: 0.7rem; color: #94a3b8;">Channel WhatsApp</small>
+    </div>
+  </a>
+  
+  <a href="https://chat.whatsapp.com/I0t2agaCjfB0ryGuZ0Nia0?mode=hq1tcla" target="_blank">
+    <i class="fas fa-robot"></i> 
+    <div>
+      <span style="display: block; font-weight: 600;">GRUP BOT</span>
+      <small style="font-size: 0.7rem; color: #94a3b8;">Support & Diskusi</small>
+    </div>
+  </a>
+  
+  <a href="https://chat.whatsapp.com/BbhujVa6xQ121Iqmiif02h?mode=hqctcla" target="_blank">
+    <i class="fas fa-users"></i> 
+    <div>
+      <span style="display: block; font-weight: 600;">KOMUNITAS</span>
+      <small style="font-size: 0.7rem; color: #94a3b8;">User Community</small>
+    </div>
+  </a>
+  
+  <a href="https://wa.me/6285134378829" target="_blank">
+    <i class="fas fa-headset"></i> 
+    <div>
+      <span style="display: block; font-weight: 600;">KONTAK ADMIN</span>
+      <small style="font-size: 0.7rem; color: #94a3b8;">Personal Support</small>
+    </div>
+  </a>
+  
+  <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+    <a href="/admin" target="_blank" class="admin-login-btn" style="
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(56, 189, 248, 0.1));
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      ">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div style="flex: 1;">
+        <div style="display: block; font-weight: 700; font-size: 1rem;">ADMIN PANEL</div>
+        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Login Administrator</div>
+      </div>
+      <i class="fas fa-external-link-alt" style="color: #818cf8;"></i>
+      <div style="
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        animation: slide 2s infinite;
+      "></div>
+    </a>
+    
+    <div style="margin-top: 12px; text-align: center;">
+      <small style="font-size: 0.7rem; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <i class="fas fa-lock"></i>
+        <span>Akses terbatas untuk admin</span>
+      </small>
+    </div>
+  </div>
+</nav>
+</div>
+
+<style>
+.admin-login-btn:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(56, 189, 248, 0.2));
+  border-color: rgba(99, 102, 241, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -10px rgba(99, 102, 241, 0.4);
+}
+
+@keyframes slide {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+</style>
+
+<header>
+<div class="container navbar">
+ <a href="#" class="brand" onclick="transitionToHome()">
+   <i class="fas fa-cloud"></i>
+   <span id="storeName" class="logo-text">Jooo PanelLegal</span>
+ </a>
+ <button class="nav-toggle" onclick="toggleDrawer()">
+   <i class="fas fa-bars"></i>
+ </button>
+</div>
+
+<style>
+.brand i {
+ font-size: 1.8rem;
+ color: #3b82f6;
+ text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+ animation: cloudFloat 3s ease-in-out infinite;
+}
+
+.logo-text {
+ font-size: 1.3rem;
+ font-weight: 800;
+ letter-spacing: 1px;
+ margin-left: 10px;
+ background: linear-gradient(90deg, white, #94a3b8);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ position: relative;
+}
+
+.logo-text::after {
+ content: '';
+ position: absolute;
+ bottom: -2px;
+ left: 0;
+ width: 100%;
+ height: 2px;
+ background: linear-gradient(90deg, #3b82f6, #00ffff, #3b82f6);
+ border-radius: 2px;
+ transform: scaleX(0);
+ transition: transform 0.3s;
+}
+
+.brand:hover .logo-text::after {
+ transform: scaleX(1);
+}
+
+@keyframes cloudFloat {
+ 0%, 100% { transform: translateY(0); }
+ 50% { transform: translateY(-3px); }
+}
+
+.nav-toggle {
+ width: 42px;
+ height: 42px;
+ border: 2px solid rgba(59, 130, 246, 0.3);
+ background: rgba(59, 130, 246, 0.1);
+ color: #60a5fa;
+ border-radius: 12px;
+ cursor: pointer;
+ transition: 0.3s;
+}
+
+.nav-toggle:hover {
+ border-color: #3b82f6;
+ background: rgba(59, 130, 246, 0.2);
+ color: white;
+ transform: rotate(90deg);
+ box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+</style>
+</header>
+
+<div id="page-landing" class="page-section active-page">
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text fade-in">
+      <div class="hero-label"><i class="fas fa-terminal"></i> Next-Gen Hosting 2026</div>
+<h1 class="hologram-title">
+   <span class="hologram-fastest">FASTEST</span>
+   <span class="hologram-cloud"> CLOUD</span>
+</h1>
+
+<style>
+.hologram-title {
+   position: relative;
+   font-size: 4rem;
+   font-family: 'Space Grotesk', sans-serif;
+   letter-spacing: -1px;
+   perspective: 500px;
+   margin-bottom: 24px;
+   line-height: 0.95;
+}
+
+.hologram-fastest {
+   color: rgba(255, 255, 255, 0.95);
+   position: relative;
+   display: inline-block;
+   text-shadow: 
+       0 1px 0 #ccc,
+       0 2px 0 #aaa,
+       0 3px 0 #888,
+       0 4px 0 #666,
+       0 5px 0 #444,
+       0 6px 1px rgba(0,0,0,.1),
+       0 0 5px rgba(255,255,255,.1),
+       0 1px 3px rgba(255,255,255,.3),
+       0 3px 5px rgba(255,255,255,.2),
+       0 5px 10px rgba(255,255,255,.25),
+       0 10px 10px rgba(255,255,255,.2),
+       0 20px 20px rgba(255,255,255,.15);
+   animation: hologramFloat 4s ease-in-out infinite;
+   transform-style: preserve-3d;
+}
+
+.hologram-cloud {
+   background: linear-gradient(
+       135deg,
+       #38bdf8 0%,
+       #3b82f6 25%,
+       #00ffff 50%,
+       #3b82f6 75%,
+       #38bdf8 100%
+   );
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-size: 400% 400%;
+   position: relative;
+   display: inline-block;
+   text-shadow: 
+       0 0 15px rgba(56, 189, 248, 0.7),
+       0 0 30px rgba(59, 130, 246, 0.5),
+       0 0 45px rgba(0, 255, 255, 0.3);
+   animation: 
+       hologramColorShift 6s ease-in-out infinite,
+       hologramGlow 2s ease-in-out infinite alternate;
+   transform-style: preserve-3d;
+}
+
+.hologram-cloud::before {
+   content: 'CLOUD';
+   position: absolute;
+   top: 2px;
+   left: 2px;
+   background: linear-gradient(180deg, transparent, rgba(255,255,255,0.8));
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   z-index: -1;
+   opacity: 0.7;
+   animation: hologramReflection 3s ease-in-out infinite alternate;
+}
+
+.hologram-title::after {
+   content: '';
+   position: absolute;
+   bottom: -15px;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 80%;
+   height: 2px;
+   background: linear-gradient(90deg, 
+       transparent, 
+       rgba(255,255,255,0.3), 
+       rgba(56, 189, 248, 0.6), 
+       rgba(255,255,255,0.3), 
+       transparent);
+   filter: blur(1px);
+   animation: scanLine 3s ease-in-out infinite;
+}
+
+@keyframes hologramFloat {
+   0%, 100% { 
+       transform: translateY(0) rotateX(0deg); 
+   }
+   50% { 
+       transform: translateY(-8px) rotateX(5deg); 
+   }
+}
+
+@keyframes hologramColorShift {
+   0% { background-position: 0% 50%; }
+   50% { background-position: 100% 50%; }
+   100% { background-position: 0% 50%; }
+}
+
+@keyframes hologramGlow {
+   from {
+       text-shadow: 
+           0 0 15px rgba(56, 189, 248, 0.7),
+           0 0 30px rgba(59, 130, 246, 0.5);
+   }
+   to {
+       text-shadow: 
+           0 0 20px rgba(56, 189, 248, 0.9),
+           0 0 40px rgba(59, 130, 246, 0.7),
+           0 0 60px rgba(0, 255, 255, 0.5);
+   }
+}
+
+@keyframes hologramReflection {
+   from { opacity: 0.5; transform: translateY(0); }
+   to { opacity: 0.9; transform: translateY(3px); }
+}
+
+@keyframes scanLine {
+   0%, 100% { opacity: 0.3; width: 50%; }
+   50% { opacity: 0.8; width: 80%; }
+}
+</style>
+      <p>Server pterodactyl dalam hitungan detik infrastruktur cloud berkinerja tinggi, uptime 99.9%.</p>
+<div>
+  <button class="btn btn-cta" style="
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border: none;
+      color: white;
+      box-shadow: 0 10px 40px rgba(59, 130, 246, 0.4);
+  " onclick="transitionToStore()">
+    MULAI SEKARANG <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+  </button>
+  
+  <button class="btn btn-outline" style="
+      border: 2px solid rgba(59, 130, 246, 0.4);
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.05);
+  " onclick="scrollToFeatures()">
+    PELAJARI <i class="fas fa-info-circle" style="margin-left: 8px;"></i>
+  </button>
+</div>
+    </div>
+    
+    <div class="hero-visual fade-in" style="animation-delay: 0.2s;">
+      <div class="hero-banner">
+        <img id="bannerImage" src="https://files.catbox.moe/q9j8yl.jpg" alt="Store Banner">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features-section" id="features-target">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-size: 2.5rem; margin-bottom: 12px;">SERVER STATUS & PERFORMANCE</h2>
+      <p style="color: var(--text-muted); font-size: 1.1rem;">Monitor realtime status dan performa server Pterodactyl</p>
+    </div>
+    
+<div class="server-info-panel" id="homeServerInfoPanel">
+  <div class="server-header">
+    <div class="server-title">
+      <i class="fas fa-server"></i>
+      <span>Server Pterodactyl</span>
+    </div>
+    <div class="status-indicator" id="homeStatusContainer">
+      <span class="status-dot" id="homeStatIndicator"></span>
+      <span class="status-text" id="homeStatusText">Checking...</span>
+    </div>
+  </div>
+
+  <div class="server-grid-container">
+    <div class="server-card compact">
+      <div class="server-card-icon cpu">
+        <i class="fas fa-microchip"></i>
+      </div>
+      <div class="server-card-body">
+        <div class="server-card-label">CPU</div>
+        <div class="server-card-value" id="homeCpuModelCompact">Loading...</div>
+        <div class="server-card-sub" id="homeCpuUsageCompact">Processor Model</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="homeCpuProgressFill" style="width:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="server-card compact">
+      <div class="server-card-icon ram">
+        <i class="fas fa-memory"></i>
+      </div>
+      <div class="server-card-body">
+        <div class="server-card-label">RAM</div>
+        <div class="server-card-value" id="homeTotalRamCompact">- GB</div>
+        <div class="server-card-sub" id="homeRamUsageCompact">Total Memory</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="homeRamProgressFill" style="width:100%;background:linear-gradient(90deg,#10b981,#34d399);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="server-card compact">
+      <div class="server-card-icon disk">
+        <i class="fas fa-hdd"></i>
+      </div>
+      <div class="server-card-body">
+        <div class="server-card-label">Storage</div>
+        <div class="server-card-value" id="homeTotalDiskCompact">- GB</div>
+        <div class="server-card-sub" id="homeDiskUsageCompact">Total Disk</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="homeDiskProgressFill" style="width:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="server-card compact">
+      <div class="server-card-icon os">
+        <i class="fab fa-linux"></i>
+      </div>
+      <div class="server-card-body">
+        <div class="server-card-label">System</div>
+        <div class="server-card-value" id="homeOsNameCompact">Linux</div>
+        <div class="server-card-sub" id="homeUptimeCompact">Uptime: -</div>
+        <div class="progress-bar static">
+          <div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#8b5cf6,#a78bfa);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="server-footer">
+    <div class="server-stats">
+      <div class="server-stat">
+        <i class="fas fa-users"></i>
+        <div class="stat-content">
+          <div class="stat-label">Total Users</div>
+          <div class="stat-number" id="homeTotalUsersCompact">0</div>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="server-stat">
+        <i class="fas fa-server"></i>
+        <div class="stat-content">
+          <div class="stat-label">Active Servers</div>
+          <div class="stat-number" id="homeTotalServersCompact">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div style="text-align: center; margin-top: 80px; margin-bottom: 60px;">
+      <h2 style="font-size: 2.5rem; margin-bottom: 12px;">MENGAPA MEMILIH KAMI</h2>
+      <p style="color: var(--text-muted); font-size: 1.1rem;">Teknologi server terdepan untuk performa maksimal</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+        <h4>High Performance</h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px; line-height: 1.6;">CPU Server berkecepatan tinggi memastikan aplikasi Anda berjalan tanpa lag.</p>
+      </div>
+      <div class="feature-card fade-in" style="animation-delay: 0.1s;">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h4>DDoS Protection</h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px; line-height: 1.6;">Sistem keamanan berlapis melindungi server dari serangan jahat 24/7.</p>
+      </div>
+      <div class="feature-card fade-in" style="animation-delay: 0.2s;">
+        <div class="feature-icon"><i class="fas fa-clock"></i></div>
+        <h4>99.9% Uptime</h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px; line-height: 1.6;">Jaminan server selalu online agar bisnis dan komunitas Anda tetap berjalan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div id="page-store" class="page-section">
+<div class="container">
+  <div class="store-nav">
+    <div>
+      <div style="position: relative; display: inline-block;">
+        <div class="hologram-label" style="
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 16px;
+          background: rgba(59, 130, 246, 0.1);
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          border-radius: 100px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #60a5fa;
+          margin-bottom: 12px;
+          position: relative;
+          overflow: hidden;
+        ">
+          <i class="fas fa-store" style="font-size: 0.8rem;"></i>
+          <span>Marketplace</span>
+          <div style="
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          " class="slide-animation"></div>
+        </div>
+      </div>
+      
+      <h2 class="font-heading" style="
+        font-size: 2.8rem;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        display: inline-block;
+      ">
+        PTERODACTYL HOASTING
+        <span style="
+          position: absolute;
+          bottom: -8px;
+          left: 0;
+          width: 60px;
+          height: 3px;
+          background: linear-gradient(90deg, #3b82f6, #00ffff, #3b82f6);
+          border-radius: 2px;
+        " class="width-pulse"></span>
+      </h2>
+      
+      <p style="
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        line-height: 1.6;
+        margin-top: 16px;
+        position: relative;
+        padding-left: 20px;
+        border-left: 3px solid rgba(59, 130, 246, 0.3);
+      ">
+        <i class="fas fa-rocket rocket-float" style="
+          position: absolute;
+          left: -12px;
+          top: 2px;
+          color: #3b82f6;
+          font-size: 1.2rem;
+          text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        "></i>
+        Pilih paket server premium dengan performa maksimal untuk kebutuhan hosting Anda
+      </p>
+    </div>
+    
+    <div class="nav-actions" style="
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      padding: 20px;
+      background: rgba(15, 15, 22, 0.7);
+      border-radius: 20px;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 40px -15px rgba(0,0,0,0.5);
+      min-width: 280px;
+    ">
+      <div style="
+        position: absolute;
+        top: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+        border-radius: 2px;
+        filter: blur(1px);
+      "></div>
+      
+      <div style="
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 8px;
+      ">
+        <span style="
+          font-size: 0.75rem;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          font-weight: 600;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        ">
+          <i class="fas fa-bolt" style="color: #f59e0b;"></i>
+          QUICK ACTIONS
+        </span>
+      </div>
+      
+      <div style="display: flex; gap: 10px; width: 100%;">
+        <button class="nav-btn home" onclick="transitionToHome()" style="
+          flex: 1;
+          padding: 14px;
+          background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+          border: 2px solid rgba(59, 130, 246, 0.3);
+          border-radius: 14px;
+          color: #60a5fa;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        ">
+          <i class="fas fa-home" style="margin-right: 8px; font-size: 1.1rem;"></i>
+          <span style="font-weight: 600;">Home</span>
+          <div class="ripple-effect"></div>
+        </button>
+        
+        <button class="nav-btn history" onclick="openHistoryModal()" style="
+          flex: 1;
+          padding: 14px;
+          background: linear-gradient(145deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05));
+          border: 2px solid rgba(139, 92, 246, 0.3);
+          border-radius: 14px;
+          color: #a78bfa;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        ">
+          <i class="fas fa-history" style="margin-right: 8px; font-size: 1.1rem;"></i>
+          <span style="font-weight: 600;">History</span>
+          <div class="ripple-effect"></div>
+        </button>
+        
+        <button class="nav-btn renew" onclick="openRenewModal()" style="
+          flex: 1;
+          padding: 14px;
+          background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+          border: 2px solid rgba(16, 185, 129, 0.3);
+          border-radius: 14px;
+          color: #34d399;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        ">
+          <i class="fas fa-sync-alt" style="margin-right: 8px; font-size: 1.1rem;"></i>
+          <span style="font-weight: 600;">Renew</span>
+          <div class="ripple-effect"></div>
+        </button>
+      </div>
+      
+      <div style="
+        margin-top: 8px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        width: 100%;
+        text-align: center;
+      ">
+        <span style="
+          font-size: 0.7rem;
+          color: #64748b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+        ">
+          <i class="fas fa-info-circle"></i>
+          <span>Click untuk navigasi cepat</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="packages-grid" id="packagesGrid"></div>
+</div>
+</div>
+
+<style>
+.slide-animation {
+  animation: slide 2s infinite;
+}
+
+.width-pulse {
+  animation: widthPulse 3s ease-in-out infinite;
+}
+
+.rocket-float {
+  animation: rocketFloat 2s ease-in-out infinite;
+}
+
+.ripple-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+@keyframes slide {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes widthPulse {
+  0%, 100% { width: 60px; }
+  50% { width: 100px; }
+}
+
+@keyframes rocketFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const ripple = btn.querySelector('.ripple-effect');
+    
+    btn.addEventListener('mouseenter', function(e) {
+      if (ripple) {
+        ripple.style.width = '200px';
+        ripple.style.height = '200px';
+      }
+    });
+    
+    btn.addEventListener('mouseleave', function(e) {
+      if (ripple) {
+        ripple.style.width = '0';
+        ripple.style.height = '0';
+      }
+    });
+    
+    btn.addEventListener('mousedown', function(e) {
+      this.style.transform = 'scale(0.95)';
+    });
+    
+    btn.addEventListener('mouseup', function(e) {
+      this.style.transform = 'scale(1)';
+    });
+  });
+});
+</script>
+
+<div class="modal-backdrop" id="checkoutModal">
+<div class="modal-panel">
+  <div class="modal-header">
+    <h3 class="modal-title">Konfigurasi Server</h3>
+    <button class="btn-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+  </div>
+
+  <div id="checkoutForm">
+    <div class="product-summary">
+      <h4 id="productName">PRODUCT NAME</h4>
+      <p>Konfigurasi server sesuai kebutuhan Anda</p>
+    </div>
+
+    <form id="orderForm">
+      <div class="form-group">
+        <label class="form-label">Username Panel</label>
+        <div class="input-wrapper" id="usernameWrapper">
+          <input type="text" name="customUsername" class="form-input" placeholder="Masukkan username" required pattern="[a-z0-9]{3,20}" autocomplete="off">
+          <div class="input-loader"></div>
+        </div>
+        <div class="validation-msg" id="usernameError"></div>
+        <div class="suggestions-container hidden" id="suggestionsBox"></div>
+        <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px; display: block;">Huruf kecil (a-z) & angka (0-9), 3-20 karakter.</small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Durasi (Hari)</label>
+        <input type="number" name="days" class="form-input" value="30" min="7" max="365" required>
+      </div>
+
+      <button type="submit" class="btn btn-submit" id="generateBtn">
+        Lanjut ke Pembayaran <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+      </button>
+    </form>
+  </div>
+
+  <div id="paymentSection" class="hidden">
+    <div class="payment-timer" id="paymentTimer">
+      <i class="fas fa-clock" style="font-size: 1.1rem;"></i>
+      <span>Selesaikan pembayaran dalam <span id="countdownDisplay" style="font-family: var(--font-mono); font-size: 1.1rem; color: white; margin-left: 4px;">05:00</span></span>
+    </div>
+
+    <div class="qr-container">
+      <div id="qrcode" style="width: 100%; text-align: center;">
+        <div style="padding: 40px; color: #666;">Loading QR...</div>
+      </div>
+    </div>
+
+    <div class="amount-display" id="totalAmount">Rp 0</div>
+
+    <div class="payment-actions">
+      <button class="btn-payment primary" onclick="downloadQRIS()">
+        <i class="fas fa-download"></i> Download QRIS
+      </button>
+      <button class="btn-payment" onclick="manualCheckPayment()" id="manualCheckBtn">
+        <i class="fas fa-sync-alt"></i> Cek Status Pembayaran
+      </button>
+      <div id="checkingPayment" class="checking-status hidden">
+        <div class="input-loader" style="display: block; position: static; transform: none;"></div>
+        <span>Memeriksa pembayaran...</span>
+      </div>
+      <button class="btn-payment danger" onclick="confirmCancelPayment()">
+        <i class="fas fa-times"></i> Batalkan Transaksi
+      </button>
+    </div>
+  </div>
+
+  <div id="panelDataContainer" class="hidden">
+    <div class="success-icon">
+      <i class="fas fa-check"></i>
+    </div>
+    <h3 style="text-align: center; margin-bottom: 8px; font-size: 1.5rem;">Berhasil!</h3>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 24px;">Server Anda telah berhasil dibuat.</p>
+
+    <div class="data-grid">
+      <div class="data-row">
+        <span class="data-label">Panel URL</span>
+        <div class="data-value">
+          <span id="panelUrl">...</span>
+          <button class="btn-copy" onclick="copyToClipboard('panelUrl')"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Username</span>
+        <div class="data-value">
+          <span id="panelUsername">...</span>
+          <button class="btn-copy" onclick="copyToClipboard('panelUsername')"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Password</span>
+        <div class="data-value">
+          <span id="panelPassword">...</span>
+          <button class="btn-copy" onclick="copyToClipboard('panelPassword')"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <button class="btn btn-submit" onclick="openPanelLogin()">
+        <i class="fas fa-external-link-alt"></i> Login Panel
+      </button>
+      <button class="btn btn-card" onclick="savePanelData()" style="margin: 0;">
+        <i class="fas fa-save"></i> Simpan Data
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="renewModal">
+<div class="modal-panel">
+  <div class="modal-header">
+    <h3 class="modal-title">Perpanjang Server</h3>
+    <button class="btn-close" onclick="closeRenewModal()"><i class="fas fa-times"></i></button>
+  </div>
+
+  <div id="renewForm">
+    <div class="product-summary">
+      <h4>Perpanjang Masa Aktif Server</h4>
+      <p>Masukkan username panel Anda untuk memperpanjang server</p>
+    </div>
+
+    <form id="renewCheckForm">
+      <div class="form-group">
+        <label class="form-label">Username Panel</label>
+        <div class="input-wrapper" id="renewUsernameWrapper">
+          <input type="text" name="renewUsername" class="form-input" placeholder="Masukkan username" required autocomplete="off">
+          <div class="input-loader"></div>
+        </div>
+        <div class="validation-msg" id="renewUsernameError"></div>
+        <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px; display: block;">Username yang Anda gunakan untuk login ke panel</small>
+      </div>
+
+      <button type="submit" class="btn btn-submit" id="checkRenewBtn">
+        Cek Server <i class="fas fa-search" style="margin-left: 8px;"></i>
+      </button>
+    </form>
+  </div>
+
+  <div id="renewInfoSection" class="hidden">
+    <div class="product-summary">
+      <h4 id="renewProductName">SERVER NAME</h4>
+      <p id="renewServerStatus">Status server</p>
+    </div>
+
+    <div class="server-info-box">
+      <div class="server-info-row" style="display: none;">
+        <span class="server-info-value" id="renewServerId">-</span>
+      </div>
+      <div class="server-info-row">
+        <span class="server-info-label">Nama Server</span>
+        <span class="server-info-value" id="renewServerName">-</span>
+      </div>
+      <div class="server-info-row">
+        <span class="server-info-label">Spesifikasi</span>
+        <span class="server-info-value" id="renewServerSpecs">-</span>
+      </div>
+      <div class="server-info-row">
+        <span class="server-info-label">Sisa Waktu</span>
+        <span class="server-info-value" id="renewRemainingDays">-</span>
+      </div>
+      <div class="server-info-row">
+        <span class="server-info-label">Status</span>
+        <span class="server-info-value" id="renewServerStatusText">-</span>
+      </div>
+    </div>
+
+    <div class="duration-buttons-container">
+      <button type="button" class="duration-btn" data-days="7" onclick="selectRenewDuration(7)">7 Hari</button>
+      <button type="button" class="duration-btn" data-days="15" onclick="selectRenewDuration(15)">15 Hari</button>
+      <button type="button" class="duration-btn active" data-days="30" onclick="selectRenewDuration(30)">30 Hari</button>
+      <button type="button" class="duration-btn" data-days="60" onclick="selectRenewDuration(60)">60 Hari</button>
+      <button type="button" class="duration-btn" data-days="90" onclick="selectRenewDuration(90)">90 Hari</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Durasi Perpanjangan (Hari)</label>
+      <input type="number" id="renewDays" class="form-input" value="30" min="1" max="365" required onchange="calculateRenewPrice()">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Total Biaya</label>
+      <div id="renewPriceDisplay" style="
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        font-family: var(--font-mono);
+        font-size: 1.2rem;
+        color: var(--success);
+        text-align: center;
+        font-weight: 700;
+      ">
+        Rp 0
+      </div>
+    </div>
+
+    <button class="btn-renew" onclick="processRenewal()" id="processRenewBtn">
+      <i class="fas fa-credit-card"></i> Bayar via QRIS
+    </button>
+
+    <button class="btn btn-card" onclick="backToRenewForm()" style="margin-top: 12px;">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </button>
+  </div>
+
+  <div id="renewPaymentSection" class="hidden">
+    <div class="payment-timer" id="renewPaymentTimer">
+      <i class="fas fa-clock" style="font-size: 1.1rem;"></i>
+      <span>Selesaikan pembayaran dalam <span id="renewCountdownDisplay" style="font-family: var(--font-mono); font-size: 1.1rem; color: white; margin-left: 4px;">05:00</span></span>
+    </div>
+
+    <div class="qr-container">
+      <div id="renewQrcode" style="width: 100%; text-align: center;">
+        <div style="padding: 40px; color: #666;">Loading QR...</div>
+      </div>
+    </div>
+
+    <div class="amount-display" id="renewTotalAmount">Rp 0</div>
+
+    <div class="payment-actions">
+      <button class="btn-payment primary" onclick="downloadRenewQRIS()">
+        <i class="fas fa-download"></i> Download QRIS
+      </button>
+      <button class="btn-payment" onclick="manualCheckRenewPayment()" id="manualCheckRenewBtn">
+        <i class="fas fa-sync-alt"></i> Cek Status Pembayaran
+      </button>
+      <div id="checkingRenewPayment" class="checking-status hidden">
+        <div class="input-loader" style="display: block; position: static; transform: none;"></div>
+        <span>Memeriksa pembayaran...</span>
+      </div>
+      <button class="btn-payment danger" onclick="confirmCancelRenewPayment()">
+        <i class="fas fa-times"></i> Batalkan Transaksi
+      </button>
+    </div>
+  </div>
+
+  <div id="renewSuccessSection" class="hidden">
+    <div class="success-icon">
+      <i class="fas fa-check"></i>
+    </div>
+    <h3 style="text-align: center; margin-bottom: 8px; font-size: 1.5rem;">Berhasil!</h3>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 24px;">Server Anda telah berhasil diperpanjang.</p>
+
+    <div class="data-grid">
+      <div class="data-row">
+        <span class="data-label">Username</span>
+        <div class="data-value">
+          <span id="renewSuccessUsername">...</span>
+          <button class="btn-copy" onclick="copyToClipboard('renewSuccessUsername')"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Server ID</span>
+        <div class="data-value">
+          <span id="renewSuccessServerId">...</span>
+          <button class="btn-copy" onclick="copyToClipboard('renewSuccessServerId')"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Durasi Ditambahkan</span>
+        <div class="data-value">
+          <span id="renewSuccessDays">...</span>
+        </div>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Berakhir Pada</span>
+        <div class="data-value">
+          <span id="renewSuccessExpiry">...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <button class="btn btn-submit" onclick="openPanelLogin()">
+        <i class="fas fa-external-link-alt"></i> Login Panel
+      </button>
+      <button class="btn btn-card" onclick="closeRenewModal()" style="margin: 0;">
+        <i class="fas fa-check"></i> Selesai
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="historyModal">
+<div class="modal-panel" style="max-width: 560px;">
+  <div class="modal-header">
+    <div>
+      <h3 class="modal-title">Riwayat Transaksi</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Data tersimpan realtime</p>
+    </div>
+    <button class="btn-close" onclick="document.getElementById('historyModal').classList.remove('show')"><i class="fas fa-times"></i></button>
+  </div>
+  
+  <div id="historyList"></div>
+  
+  <button class="btn-clear-history" onclick="clearAllHistory()">
+    <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Hapus Semua Riwayat
+  </button>
+</div>
+</div>
+
+<div class="modal-backdrop" id="alertModal">
+<div class="modal-panel" style="max-width: 420px; text-align: center;">
+  <div id="alertIcon" class="alert-icon"></div>
+  <h3 id="alertTitle" class="alert-title">Alert</h3>
+  <p id="alertMessage" class="alert-message">Message</p>
+  <div class="alert-actions">
+    <button id="cancelBtn" class="btn-alert-secondary">Batal</button>
+    <button id="confirmBtn" class="btn-alert-primary">Konfirmasi</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast">
+<div class="toast-icon info"><i class="fas fa-info-circle"></i></div>
+<div class="toast-content">
+  <h4>Notification</h4>
+  <p id="toastMessage">Message here</p>
+</div>
+</div>
+
+<a href="https://wa.me/6285134378829" class="whatsapp-float" target="_blank">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+let CONFIG = {};
+let currentProduct = null;
+let checkInterval = null;
+let currentSessionId = null;
+let currentOrderData = null;
+let currentPanelData = null;
+let isPterodactylOnline = false;
+let usernameValidationTimeout = null;
+let usernameAvailable = false;
+let paymentCountdownInterval = null;
+let paymentTimeLeft = 300;
+let statsUpdateInterval = null;
+let homeStatsUpdateInterval = null;
+
+let renewPaymentCountdownInterval = null;
+let renewPaymentTimeLeft = 300;
+let currentRenewData = null;
+let currentRenewSessionId = null;
+
+const PRODUCTS = {
+  panels: [
+    { id: 'panel-1gb', name: 'NODE 1GB', type: 'panel', price: 3000, cpu: '100%', ram: '1.5GB', disk: '3GB' },
+    { id: 'panel-2gb', name: 'NODE 2GB', type: 'panel', price: 5000, cpu: '190%', ram: '3.5GB', disk: '6GB' },
+    { id: 'panel-3gb', name: 'NODE 3GB', type: 'panel', price: 7000, cpu: '250%', ram: '4GB', disk: '7GB' },
+    { id: 'panel-4gb', name: 'NODE 4GB', type: 'panel', price: 9000, cpu: '290%', ram: '5GB', disk: '9GB' },
+    { id: 'panel-5gb', name: 'NODE 5GB', type: 'panel', price: 11000, cpu: '330%', ram: '6GB', disk: '13GB' },
+    { id: 'panel-6gb', name: 'NODE 6GB', type: 'panel', price: 14000, cpu: '450%', ram: '7GB', disk: '15GB' },
+    { id: 'panel-7gb', name: 'NODE 7GB', type: 'panel', price: 18000, cpu: '500%', ram: '8GB', disk: '17GB' },
+    { id: 'panel-premium', name: 'NODE UNLIMITED', type: 'panel', price: 30000, cpu: '∞', ram: '∞', disk: '∞' }
+  ]
+};
+
+function showPageLoader(text = 'LOADING') {
+  const loader = document.getElementById('pageLoader');
+  loader.classList.remove('hidden-loader');
+}
+
+function hidePageLoader() {
+  document.getElementById('pageLoader').classList.add('hidden-loader');
+}
+
+function toggleDrawer() {
+  document.querySelector('.drawer').classList.toggle('open');
+  document.querySelector('.drawer-overlay').classList.toggle('open');
+}
+
+function transitionToStore() {
+  showPageLoader('LOADING STORE');
+  setTimeout(() => {
+    document.getElementById('page-landing').classList.remove('active-page');
+    document.getElementById('page-store').classList.add('active-page');
+    window.scrollTo(0,0);
+    hidePageLoader();
+    renderProducts();
+    if (homeStatsUpdateInterval) {
+      clearInterval(homeStatsUpdateInterval);
+      homeStatsUpdateInterval = null;
+    }
+  }, 800);
+}
+
+function transitionToHome() {
+  showPageLoader('LOADING HOME');
+  setTimeout(() => {
+    document.getElementById('page-store').classList.remove('active-page');
+    document.getElementById('page-landing').classList.add('active-page');
+    window.scrollTo(0,0);
+    hidePageLoader();
+    loadHomeServerStats();
+    if (!homeStatsUpdateInterval) {
+      homeStatsUpdateInterval = setInterval(loadHomeServerStats, 10000);
+    }
+  }, 800);
+}
+
+function scrollToFeatures() {
+  document.getElementById('features-target').scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideAnnouncement() {
+  const announcementBar = document.getElementById('announcementBar');
+  announcementBar.style.opacity = '0';
+  announcementBar.style.transform = 'translateY(-100%)';
+  setTimeout(() => {
+    announcementBar.classList.remove('show');
+    announcementBar.style.display = 'none';
+  }, 300);
+}
+
+function startPaymentTimer() {
+  paymentTimeLeft = 300;
+  updateCountdownDisplay();
+  if(paymentCountdownInterval) clearInterval(paymentCountdownInterval);
+  paymentCountdownInterval = setInterval(() => {
+    paymentTimeLeft--;
+    updateCountdownDisplay();
+    if(paymentTimeLeft <= 0) {
+      clearInterval(paymentCountdownInterval);
+      expirePayment();
+    }
+  }, 1000);
+}
+
+function updateCountdownDisplay() {
+  const mins = Math.floor(paymentTimeLeft / 60).toString().padStart(2, '0');
+  const secs = (paymentTimeLeft % 60).toString().padStart(2, '0');
+  const display = document.getElementById('countdownDisplay');
+  if(display) display.textContent = `${mins}:${secs}`;
+}
+
+function stopPaymentTimer() {
+  if(paymentCountdownInterval) clearInterval(paymentCountdownInterval);
+}
+
+function expirePayment() {
+  showToast('Waktu pembayaran habis. Transaksi dibatalkan.', 'error');
+  closeModal();
+  if(currentSessionId) {
+    axios.post('/api/cancel-payment', { order_id: currentSessionId }).catch(() => {});
+  }
+}
+
+function saveToHistory(orderId, productName, price, panelData = null) {
+  let history = JSON.parse(localStorage.getItem('alipCloudHistory') || '[]');
+  
+  const existingIndex = history.findIndex(h => h.id === orderId);
+  const historyItem = {
+    id: orderId,
+    name: productName,
+    price: price,
+    date: new Date().toISOString(),
+    status: panelData ? 'completed' : 'pending',
+    panelData: panelData || null
+  };
+
+  if (existingIndex >= 0) {
+    history[existingIndex] = historyItem;
+  } else {
+    history.unshift(historyItem);
+  }
+  
+  if(history.length > 10) history.pop();
+  localStorage.setItem('alipCloudHistory', JSON.stringify(history));
+}
+
+function updateHistoryWithPanelData(orderId, panelData) {
+  let history = JSON.parse(localStorage.getItem('alipCloudHistory') || '[]');
+  const item = history.find(h => h.id === orderId);
+  if (item) {
+    item.status = 'completed';
+    item.panelData = panelData;
+    localStorage.setItem('alipCloudHistory', JSON.stringify(history));
+  }
+}
+
+function openHistoryModal() {
+  const list = document.getElementById('historyList');
+  const history = JSON.parse(localStorage.getItem('alipCloudHistory') || '[]');
+  
+  list.innerHTML = '';
+  
+  if(history.length === 0) {
+    list.innerHTML = `
+      <div class="history-empty">
+        <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 16px; opacity: 0.3;"></i>
+        <p>Belum ada riwayat transaksi</p>
+      </div>
+    `;
+  } else {
+    history.forEach(item => {
+      const date = new Date(item.date);
+      const dateStr = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      const timeStr = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      
+      const el = document.createElement('div');
+      el.className = 'history-item';
+      el.innerHTML = `
+        <div class="history-info">
+          <h4>${item.name}</h4>
+          <p>${item.id} • ${dateStr} ${timeStr}</p>
+          ${item.status === 'completed' ? '<span class="history-badge"><i class="fas fa-check-circle"></i> Aktif</span>' : '<span class="history-badge" style="background: rgba(245, 158, 11, 0.1); color: #fbbf24;"><i class="fas fa-clock"></i> Pending</span>'}
+        </div>
+        <div style="text-align: right;">
+          <div class="history-price">Rp ${item.price.toLocaleString()}</div>
+          ${item.panelData ? '<small style="color: var(--success);"><i class="fas fa-server"></i> Data tersimpan</small>' : ''}
+        </div>
+      `;
+      
+      el.onclick = () => {
+        document.getElementById('historyModal').classList.remove('show');
+        if (item.panelData) {
+          showSuccess(item.panelData);
+          document.getElementById('checkoutModal').classList.add('show');
+        } else if (item.status === 'pending') {
+          recoverPendingTransaction(item);
+        } else {
+          showToast('Tidak ada data panel tersimpan untuk transaksi ini', 'info');
+        }
+      };
+      
+      list.appendChild(el);
+    });
+  }
+  document.getElementById('historyModal').classList.add('show');
+}
+
+function recoverPendingTransaction(item) {
+  currentSessionId = item.id;
+  currentOrderData = { price: item.price, productName: item.name };
+  
+  const modal = document.getElementById('checkoutModal');
+  modal.classList.add('show');
+  document.getElementById('checkoutForm').classList.add('hidden');
+  document.getElementById('paymentSection').classList.remove('hidden');
+  document.getElementById('panelDataContainer').classList.add('hidden');
+  document.getElementById('productName').textContent = `Recovery: ${item.name}`;
+  document.getElementById('totalAmount').textContent = 'Rp ' + item.price.toLocaleString('id-ID');
+  document.getElementById('qrcode').innerHTML = '<div style="padding: 40px; color: #999; font-size: 0.9rem;">Silahkan cek status pembayaran</div>';
+  
+  startPaymentTimer();
+  showToast('Memulihkan sesi pembayaran...', 'info');
+}
+
+function clearAllHistory() {
+  showAlert(
+    'Hapus Riwayat',
+    'Semua data riwayat dan credential panel akan dihapus permanen. Lanjutkan?',
+    'warning',
+    () => {
+      localStorage.removeItem('alipCloudHistory');
+      openHistoryModal();
+      showToast('Riwayat berhasil dihapus', 'success');
+    }
+  );
+}
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden-loader');
+    init();
+    checkServiceStatus();
+    loadHomeServerStats();
+    if (!homeStatsUpdateInterval) {
+      homeStatsUpdateInterval = setInterval(loadHomeServerStats, 10000);
+    }
+  }, 1500);
+});
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  const iconDiv = t.querySelector('.toast-icon');
+  const title = t.querySelector('h4');
+  const txt = document.getElementById('toastMessage');
+  
+  txt.textContent = msg;
+  t.classList.add('show');
+  
+  iconDiv.className = 'toast-icon ' + type;
+  
+  if(type === 'success') { 
+    iconDiv.innerHTML = '<i class="fas fa-check"></i>'; 
+    title.textContent = 'Berhasil';
+  }
+  else if(type === 'error') { 
+    iconDiv.innerHTML = '<i class="fas fa-times"></i>'; 
+    title.textContent = 'Error';
+  }
+  else if(type === 'warning') { 
+    iconDiv.innerHTML = '<i class="fas fa-exclamation"></i>'; 
+    title.textContent = 'Perhatian';
+  }
+  else { 
+    iconDiv.innerHTML = '<i class="fas fa-info"></i>'; 
+    title.textContent = 'Info';
+  }
+
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function showAlert(title, msg, type, onYes, onNo) {
+  const m = document.getElementById('alertModal');
+  const i = document.getElementById('alertIcon');
+  const t = document.getElementById('alertTitle');
+  const ms = document.getElementById('alertMessage');
+  
+  t.textContent = title;
+  ms.textContent = msg;
+  
+  if(type === 'error') i.innerHTML = '<i class="fas fa-times-circle" style="color: var(--danger)"></i>';
+  else if(type === 'success') i.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success)"></i>';
+  else if(type === 'warning') i.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #fbbf24"></i>';
+  else i.innerHTML = '<i class="fas fa-info-circle" style="color: var(--primary)"></i>';
+  
+  const btnYes = document.getElementById('confirmBtn');
+  const btnNo = document.getElementById('cancelBtn');
+  
+  if(onYes) {
+    btnYes.style.display = 'block';
+    btnYes.onclick = () => { m.classList.remove('show'); onYes(); };
+    btnNo.textContent = "Batal";
+    btnNo.onclick = () => { m.classList.remove('show'); if(onNo) onNo(); };
+  } else {
+    btnYes.style.display = 'none';
+    btnNo.textContent = "Tutup";
+    btnNo.onclick = () => m.classList.remove('show');
+  }
+  m.classList.add('show');
+}
+
+async function init() {
+  try {
+    const res = await fetch('/api/config');
+    const data = await res.json();
+    
+    CONFIG = data;
+    if (CONFIG.success) {
+      document.getElementById('storeName').textContent = CONFIG.storeName;
+      
+      // === PERBAIKAN LOGO ===
+      if (CONFIG.websiteLogo) {
+        const brandLink = document.querySelector('.brand');
+        if (brandLink) {
+          // Hapus icon cloud
+          const oldIcon = brandLink.querySelector('i');
+          if (oldIcon) oldIcon.remove();
+          
+          // Buat element img untuk logo
+          const logoImg = document.createElement('img');
+          logoImg.src = CONFIG.websiteLogo;
+          logoImg.alt = CONFIG.storeName;
+          logoImg.style.height = '40px';
+          logoImg.style.width = 'auto';
+          logoImg.style.borderRadius = '8px';
+          logoImg.style.objectFit = 'contain';
+          
+          // Insert di awal brand
+          brandLink.insertBefore(logoImg, brandLink.firstChild);
+        }
+      }
+      // === END PERBAIKAN LOGO ===
+      
+      if (CONFIG.websiteBanner) {
+        const bannerImg = document.getElementById('bannerImage');
+        if (bannerImg) {
+          bannerImg.src = CONFIG.websiteBanner;
+        }
+      }
+      
+      if (CONFIG.announcement && CONFIG.announcement.active && CONFIG.announcement.text) {
+        document.getElementById('announcementText').textContent = CONFIG.announcement.text;
+        document.getElementById('announcementBar').classList.add('show');
+      }
+      
+      if (CONFIG.prices) {
+        PRODUCTS.panels.forEach(p => {
+          if (p.id === 'panel-1gb') p.price = CONFIG.prices.PANEL_1GB || 3000;
+          else if (p.id === 'panel-2gb') p.price = CONFIG.prices.PANEL_2GB || 5000;
+          else if (p.id === 'panel-3gb') p.price = CONFIG.prices.PANEL_3GB || 7000;
+          else if (p.id === 'panel-4gb') p.price = CONFIG.prices.PANEL_4GB || 9000;
+          else if (p.id === 'panel-5gb') p.price = CONFIG.prices.PANEL_5GB || 11000;
+          else if (p.id === 'panel-6gb') p.price = CONFIG.prices.PANEL_6GB || 14000;
+          else if (p.id === 'panel-7gb') p.price = CONFIG.prices.PANEL_7GB || 18000;
+          else if (p.id === 'panel-premium') p.price = CONFIG.prices.PANEL_PREMIUM || 30000;
+        });
+      }
+    }
+  } catch(e) { 
+    console.log('Config load failed');
+  }
+}
+
+async function calculatePrice(productId, days) {
+  try {
+    const res = await fetch('/api/calculate-price', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_id: productId,
+        days: days
+      })
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      return data.calculatedPrice;
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function renderProducts() {
+  const grid = document.getElementById('packagesGrid');
+  grid.innerHTML = PRODUCTS.panels.map((p, idx) => `
+    <div class="product-card fade-in" style="animation-delay: ${idx * 0.1}s">
+      ${p.name.toUpperCase().includes('UNLIMITED') ? '<div class="badge-best">RECOMMENDED</div>' : ''}
+      <div class="card-title">${p.name}</div>
+      <div class="card-subtitle">Server Pterodactyl</div>
+      <div class="card-price">
+        Rp${p.price.toLocaleString('id-ID')} <small>/bulan</small>
+      </div>
+      <div class="card-specs">
+        <div class="spec-row"><span class="spec-label">CPU</span> <span class="spec-val">${p.cpu}</span></div>
+        <div class="spec-row"><span class="spec-label">RAM</span> <span class="spec-val">${p.ram}</span></div>
+        <div class="spec-row"><span class="spec-label">DISK</span> <span class="spec-val">${p.disk}</span></div>
+      </div>
+      <button class="btn btn-card" onclick="selectPackage('${p.id}', 'panel')">
+        Pesan Sekarang <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+      </button>
+    </div>
+  `).join('');
+}
+
+async function checkServiceStatus() {
+  try {
+    const res = await fetch('/health');
+    const data = await res.json();
+    isPterodactylOnline = data.status === 'OK';
+  } catch (e) { 
+    isPterodactylOnline = false;
+  }
+}
+
+async function loadHomeServerStats() {
+  try {
+    const res = await fetch('/api/server-stats');
+    const data = await res.json();
+
+    if (!data.success) throw new Error('Invalid response');
+
+    const hw = data.stats.hardware;
+
+    document.getElementById('homeCpuModelCompact').textContent =
+      hw.cpuModel ? hw.cpuModel.split(' ').slice(0, 4).join(' ') : 'Unknown';
+
+    document.getElementById('homeCpuUsageCompact').textContent = 'Processor Model';
+    document.getElementById('homeCpuProgressFill').style.width = '100%';
+
+    document.getElementById('homeTotalRamCompact').textContent =
+      hw.totalRam ? (hw.totalRam / 1024).toFixed(1) + ' GB' : '0 GB';
+
+    document.getElementById('homeRamUsageCompact').textContent = 'Total Memory';
+    document.getElementById('homeRamProgressFill').style.width = '100%';
+
+    document.getElementById('homeTotalDiskCompact').textContent =
+      hw.totalDisk || '0G';
+
+    document.getElementById('homeDiskUsageCompact').textContent = 'Total Disk';
+    document.getElementById('homeDiskProgressFill').style.width = '100%';
+
+    document.getElementById('homeOsNameCompact').textContent =
+      hw.os ? hw.os.split(' ')[0] : 'Linux';
+
+    document.getElementById('homeUptimeCompact').textContent =
+      hw.uptime ? `Uptime: ${hw.uptime.replace('up ', '')}` : 'Uptime: -';
+
+    document.getElementById('homeTotalUsersCompact').textContent =
+      data.stats.users ?? '0';
+
+    document.getElementById('homeTotalServersCompact').textContent =
+      data.stats.servers ?? '0';
+
+    const dot = document.getElementById('homeStatIndicator');
+    const txt = document.getElementById('homeStatusText');
+
+    dot.className = 'status-dot online';
+    txt.textContent = 'ONLINE';
+    txt.style.color = '#10b981';
+
+  } catch (e) {
+    const dot = document.getElementById('homeStatIndicator');
+    const txt = document.getElementById('homeStatusText');
+
+    dot.className = 'status-dot offline';
+    txt.textContent = 'CONNECTION ERROR';
+    txt.style.color = '#ef4444';
+  }
+}
+
+async function selectPackage(id, type) {
+  if(!isPterodactylOnline) {
+    showAlert('Sistem Offline', 'Server sedang maintenance atau belum dikonfigurasi. Silakan coba lagi nanti.', 'error');
+    return;
+  }
+  
+  currentProduct = PRODUCTS[type + 's'].find(p => p.id === id);
+  if(!currentProduct) return;
+
+  const calculatedPrice = await calculatePrice(id, 30);
+  if (calculatedPrice) {
+    currentProduct.calculatedPrice = calculatedPrice;
+  }
+
+  document.getElementById('productName').textContent = currentProduct.name;
+  document.getElementById('checkoutModal').classList.add('show');
+  
+  document.getElementById('checkoutForm').classList.remove('hidden');
+  document.getElementById('paymentSection').classList.add('hidden');
+  document.getElementById('panelDataContainer').classList.add('hidden');
+  document.getElementById('orderForm').reset();
+  
+  usernameAvailable = false;
+  document.getElementById('usernameError').classList.remove('show');
+  document.getElementById('suggestionsBox').classList.add('hidden');
+  document.querySelector('input[name="customUsername"]').classList.remove('error');
+  document.getElementById('usernameWrapper').classList.remove('loading');
+  
+  stopPaymentTimer();
+}
+
+function closeModal() {
+  document.getElementById('checkoutModal').classList.remove('show');
+  if(checkInterval) clearInterval(checkInterval);
+  stopPaymentTimer();
+}
+
+document.querySelector('input[name="customUsername"]').addEventListener('input', (e) => {
+  const val = e.target.value.trim().toLowerCase();
+  const wrapper = document.getElementById('usernameWrapper');
+  const err = document.getElementById('usernameError');
+  const suggestionsBox = document.getElementById('suggestionsBox');
+  
+  clearTimeout(usernameValidationTimeout);
+  err.classList.remove('show');
+  suggestionsBox.classList.add('hidden');
+  e.target.classList.remove('error');
+  usernameAvailable = false;
+
+  if(val.length > 0 && !/^[a-z0-9]*$/.test(val)) {
+    err.innerHTML = '<i class="fas fa-exclamation-circle"></i> Hanya huruf kecil dan angka yang diperbolehkan';
+    err.classList.add('show');
+    e.target.classList.add('error');
+    return;
+  }
+
+  if(val.length >= 3) {
+    wrapper.classList.add('loading');
+    
+    usernameValidationTimeout = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/check-username/${val}`);
+        const data = await res.json();
+        
+        wrapper.classList.remove('loading');
+        
+        if(!data.available) {
+          err.innerHTML = '<i class="fas fa-times-circle"></i> Username sudah digunakan';
+          err.classList.add('show');
+          e.target.classList.add('error');
+          usernameAvailable = false;
+          
+          const suggestions = generateUsernameSuggestions(val);
+          suggestionsBox.innerHTML = suggestions.map(s => 
+            `<button type="button" class="suggestion-btn" onclick="useSuggestedUsername('${s}')">${s}</button>`
+          ).join('');
+          suggestionsBox.classList.remove('hidden');
+        } else {
+          err.innerHTML = '<i class="fas fa-check-circle"></i> Username tersedia';
+          err.className = 'validation-msg success show';
+          usernameAvailable = true;
+        }
+      } catch(e) {
+        wrapper.classList.remove('loading');
+      }
+    }, 800);
+  } else {
+    wrapper.classList.remove('loading');
+  }
+});
+
+function generateUsernameSuggestions(base) {
+  const suggestions = [];
+  const randoms = ['', '01', '02', '03', 'x', 'pro', 'dev', 'official'];
+  for(let i = 0; i < 4; i++) {
+    const suffix = randoms[Math.floor(Math.random() * randoms.length)] + Math.floor(Math.random() * 99);
+    suggestions.push(base + suffix);
+  }
+  return [...new Set(suggestions)].slice(0, 4);
+}
+
+function useSuggestedUsername(username) {
+  const input = document.querySelector('input[name="customUsername"]');
+  input.value = username;
+  input.dispatchEvent(new Event('input'));
+}
+
+document.getElementById('orderForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const data = Object.fromEntries(fd);
+  
+  if(!/^[a-z0-9]{3,20}$/.test(data.customUsername)) {
+    showToast('Format username tidak valid', 'error');
+    return;
+  }
+
+  if (!usernameAvailable) {
+    showToast('Username tidak tersedia', 'error');
+    return;
+  }
+  
+  const days = parseInt(data.days);
+  
+  const calculatedPrice = await calculatePrice(currentProduct.id, days);
+  if (!calculatedPrice) {
+    showToast('Gagal menghitung harga', 'error');
+    return;
+  }
+  
+  currentSessionId = `TRX-${Date.now()}`;
+  currentOrderData = { 
+    ...data, 
+    price: calculatedPrice, 
+    productName: currentProduct.name,
+    product_id: currentProduct.id,
+    days: days
+  };
+
+  showPageLoader('GENERATING INVOICE');
+  
+  try {
+    const res = await axios.post('/api/create-qris', {
+      order_id: currentSessionId,
+      product_id: currentProduct.id,
+      username: data.customUsername,
+      product_name: currentProduct.name,
+      days: days,
+      amount: calculatedPrice
+    });
+
+    if(res.data.success) {
+      saveToHistory(currentSessionId, currentProduct.name, calculatedPrice);
+
+      document.getElementById('checkoutForm').classList.add('hidden');
+      document.getElementById('paymentSection').classList.remove('hidden');
+      
+      document.getElementById('totalAmount').textContent = 'Rp ' + calculatedPrice.toLocaleString('id-ID');
+      
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      if(res.data.qr_image) {
+        const img = document.createElement('img');
+        img.src = res.data.qr_image;
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        qrContainer.appendChild(img);
+      }
+
+      startPaymentTimer();
+      startCheckInterval();
+    } else {
+      showAlert('Gagal', res.data.error || 'Terjadi kesalahan sistem', 'error');
+    }
+  } catch(e) {
+    showAlert('Error', 'Gagal terhubung ke server', 'error');
+  } finally {
+    hidePageLoader();
+  }
+});
+
+function startCheckInterval() {
+  if(checkInterval) clearInterval(checkInterval);
+  let attempts = 0;
+  checkInterval = setInterval(async () => {
+    attempts++;
+    if(attempts > 300) { clearInterval(checkInterval); return; }
+    
+    try {
+      const res = await axios.get('/api/check-payment', { 
+        params: { order_id: currentSessionId } 
+      });
+      
+      if(res.data.success && res.data.transaction?.status === 'completed') {
+        clearInterval(checkInterval);
+        stopPaymentTimer();
+        
+        if(res.data.panel_data) {
+          updateHistoryWithPanelData(currentSessionId, res.data.panel_data);
+          showSuccess(res.data.panel_data);
+        } else {
+          showToast('Pembayaran diterima! Membuat panel...', 'success');
+          await createPanelManually();
+        }
+      }
+    } catch(e){}
+  }, 3000);
+}
+
+async function manualCheckPayment() {
+  const btn = document.getElementById('manualCheckBtn');
+  const loader = document.getElementById('checkingPayment');
+  btn.classList.add('hidden');
+  loader.classList.remove('hidden');
+
+  try {
+    const res = await axios.post('/api/manual-check', {
+      order_id: currentSessionId
+    });
+
+    if(res.data.success) {
+      if(res.data.transaction?.status === 'completed') {
+        stopPaymentTimer();
+        
+        if(res.data.panel_data) {
+          updateHistoryWithPanelData(currentSessionId, res.data.panel_data);
+          showSuccess(res.data.panel_data);
+        } else {
+          showToast('Pembayaran berhasil! Membuat panel...', 'success');
+          await createPanelManually();
+        }
+      } else {
+        showToast('Pembayaran belum ditemukan', 'warning');
+      }
+    } else {
+      showToast(res.data.error || 'Gagal memeriksa status', 'error');
+    }
+  } catch(e) { 
+  }
+  
+  btn.classList.remove('hidden');
+  loader.classList.add('hidden');
+}
+
+async function createPanelManually() {
+  try {
+    const res = await axios.post('/api/force-create-panel', {
+      order_id: currentSessionId,
+      username: currentOrderData.customUsername,
+      product_name: currentOrderData.productName,
+      days: currentOrderData.days || 30
+    });
+    if (res.data.panel_data) {
+      updateHistoryWithPanelData(currentSessionId, res.data.panel_data);
+      showSuccess(res.data.panel_data);
+    } else if (!res.data.success) {
+      showToast(res.data.error || 'Gagal membuat panel', 'warning');
+    }
+  } catch (error) {
+  }
+}
+
+function showSuccess(data) {
+  currentPanelData = data;
+  document.getElementById('checkoutForm').classList.add('hidden');
+  document.getElementById('paymentSection').classList.add('hidden');
+  document.getElementById('panelDataContainer').classList.remove('hidden');
+  
+  document.getElementById('panelUrl').textContent = data.panel_url;
+  document.getElementById('panelUsername').textContent = data.username;
+  document.getElementById('panelPassword').textContent = data.password;
+  
+  stopPaymentTimer();
+}
+
+function confirmCancelPayment() {
+  showAlert(
+    'Batalkan Transaksi?',
+    'Transaksi yang dibatalkan tidak dapat dipulihkan. Lanjutkan?',
+    'warning',
+    async () => {
+      showPageLoader('MEMBATALKAN...');
+      stopPaymentTimer();
+      try {
+        await axios.post('/api/cancel-payment', { order_id: currentSessionId });
+        closeModal();
+        showToast('Transaksi dibatalkan', 'info');
+      } catch(e) { 
+        closeModal();
+      }
+      hidePageLoader();
+    }
+  );
+}
+
+function downloadQRIS() {
+  const img = document.querySelector("#qrcode img");
+  if(!img) return showToast("QR Code tidak tersedia", "error");
+  const link = document.createElement("a");
+  link.href = img.src;
+  link.download = `QRIS-${currentSessionId}.png`;
+  link.click();
+}
+
+function copyToClipboard(id) {
+  const txt = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(txt).then(() => showToast('Berhasil disalin ke clipboard', 'success'));
+}
+
+function openPanelLogin() {
+  if(currentPanelData) window.open(currentPanelData.panel_url, '_blank');
+}
+
+function savePanelData() {
+  if(!currentPanelData) return;
+  const txt = `
+CREDENTIALS - ${CONFIG.storeName || 'Jooo PanelLegal'}
+================================
+Username : ${currentPanelData.username}
+Password : ${currentPanelData.password}
+URL      : ${currentPanelData.panel_url}
+Expired  : ${currentPanelData.expiry_date}
+================================
+`;
+  const blob = new Blob([txt], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Panel-${currentPanelData.username}.txt`;
+  a.click();
+  showToast('File credential berhasil diunduh', 'success');
+}
+
+function openRenewModal() {
+  if(!isPterodactylOnline) {
+    showAlert('Sistem Offline', 'Server sedang maintenance atau belum dikonfigurasi. Silakan coba lagi nanti.', 'error');
+    return;
+  }
+  
+  document.getElementById('renewModal').classList.add('show');
+  resetRenewModal();
+}
+
+function closeRenewModal() {
+  document.getElementById('renewModal').classList.remove('show');
+  stopRenewPaymentTimer();
+}
+
+function resetRenewModal() {
+  document.getElementById('renewForm').classList.remove('hidden');
+  document.getElementById('renewInfoSection').classList.add('hidden');
+  document.getElementById('renewPaymentSection').classList.add('hidden');
+  document.getElementById('renewSuccessSection').classList.add('hidden');
+  
+  document.getElementById('renewCheckForm').reset();
+  document.getElementById('renewUsernameError').classList.remove('show');
+  document.getElementById('renewUsernameWrapper').classList.remove('loading');
+  
+  currentRenewData = null;
+  currentRenewSessionId = null;
+  stopRenewPaymentTimer();
+}
+
+function selectRenewDuration(days) {
+  document.querySelectorAll('.duration-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if(parseInt(btn.dataset.days) === days) {
+      btn.classList.add('active');
+    }
+  });
+  
+  document.getElementById('renewDays').value = days;
+  
+  if(currentRenewData) {
+    calculateRenewPrice();
+  }
+}
+
+document.getElementById('renewCheckForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.querySelector('input[name="renewUsername"]').value.trim();
+  
+  if(!username) {
+    showToast('Masukkan username panel', 'error');
+    return;
+  }
+  
+  const wrapper = document.getElementById('renewUsernameWrapper');
+  const err = document.getElementById('renewUsernameError');
+  const btn = document.getElementById('checkRenewBtn');
+  const originalText = btn.innerHTML;
+  
+  wrapper.classList.add('loading');
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Mengecek...';
+  btn.disabled = true;
+  err.classList.remove('show');
+  
+  try {
+    const res = await axios.get(`/api/check-server/${username}`);
+    
+    if(res.data.success) {
+      currentRenewData = res.data.server;
+      
+      if(currentRenewData.suspend_by === 'admin') {
+        showAlert('Server Dikunci', 'Server Anda dikunci oleh admin. Hubungi admin untuk membuka.', 'error');
+        resetRenewModal();
+        return;
+      }
+      
+      document.getElementById('renewProductName').textContent = currentRenewData.product_name;
+      document.getElementById('renewServerName').textContent = currentRenewData.server_name || 'N/A';
+      document.getElementById('renewServerSpecs').textContent = `${currentRenewData.specs.cpu || ''} | ${currentRenewData.specs.ram || ''} | ${currentRenewData.specs.disk || ''}`;
+      
+      const daysLeft = currentRenewData.days_left;
+      document.getElementById('renewRemainingDays').textContent = daysLeft > 0 ? `${daysLeft} hari` : 'EXPIRED';
+      document.getElementById('renewRemainingDays').style.color = daysLeft > 0 ? (daysLeft <= 3 ? '#f59e0b' : '#10b981') : '#ef4444';
+      
+      const statusText = daysLeft > 0 ? 'AKTIF' : 'EXPIRED';
+      const statusColor = daysLeft > 0 ? (daysLeft <= 3 ? '#f59e0b' : '#10b981') : '#ef4444';
+      document.getElementById('renewServerStatusText').textContent = statusText;
+      document.getElementById('renewServerStatusText').style.color = statusColor;
+      
+      document.getElementById('renewServerStatus').textContent = daysLeft > 0 ? 
+        `Server aktif, sisa waktu ${daysLeft} hari` : 
+        'Server telah expired';
+      
+      selectRenewDuration(30);
+      calculateRenewPrice();
+      
+      document.getElementById('renewForm').classList.add('hidden');
+      document.getElementById('renewInfoSection').classList.remove('hidden');
+      
+    } else {
+      err.innerHTML = '<i class="fas fa-times-circle"></i> ' + (res.data.error || 'Server tidak ditemukan');
+      err.classList.add('show');
+    }
+  } catch(error) {
+    err.innerHTML = '<i class="fas fa-times-circle"></i> Gagal memeriksa server';
+    err.classList.add('show');
+  } finally {
+    wrapper.classList.remove('loading');
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+});
+
+async function calculateRenewPrice() {
+  if(!currentRenewData) return;
+  
+  const days = parseInt(document.getElementById('renewDays').value) || 30;
+  
+  try {
+    const res = await axios.post('/api/renew-panel', {
+      username: currentRenewData.username,
+      days: days
+    });
+    
+    if(res.data.success) {
+      const price = res.data.calculated_price;
+      document.getElementById('renewPriceDisplay').textContent = `Rp ${price.toLocaleString('id-ID')}`;
+      currentRenewData.price = price;
+      currentRenewData.days = days;
+      currentRenewData.product_id = res.data.product_id;
+      currentRenewData.product_name = res.data.product_name;
+    } else {
+      showToast('Gagal menghitung harga', 'error');
+    }
+  } catch(error) {
+    showToast('Gagal menghitung harga', 'error');
+  }
+}
+
+function backToRenewForm() {
+  document.getElementById('renewInfoSection').classList.add('hidden');
+  document.getElementById('renewForm').classList.remove('hidden');
+}
+
+async function processRenewal() {
+  if(!currentRenewData || !currentRenewData.price) {
+    showToast('Data server tidak lengkap', 'error');
+    return;
+  }
+  
+  const btn = document.getElementById('processRenewBtn');
+  const originalText = btn.innerHTML;
+  
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Memproses...';
+  btn.disabled = true;
+  
+  try {
+    currentRenewSessionId = `RENEW-${Date.now()}`;
+    
+    const res = await axios.post('/api/create-qris', {
+      order_id: currentRenewSessionId,
+      product_id: currentRenewData.product_id,
+      username: currentRenewData.username,
+      product_name: currentRenewData.product_name,
+      days: currentRenewData.days,
+      amount: currentRenewData.price,
+      type: 'renewal',
+      server_id: currentRenewData.server_id
+    });
+    
+    if(res.data.success) {
+      saveToHistory(currentRenewSessionId, `Renew: ${currentRenewData.product_name}`, currentRenewData.price);
+      
+      document.getElementById('renewInfoSection').classList.add('hidden');
+      document.getElementById('renewPaymentSection').classList.remove('hidden');
+      
+      document.getElementById('renewTotalAmount').textContent = 'Rp ' + currentRenewData.price.toLocaleString('id-ID');
+      
+      const qrContainer = document.getElementById('renewQrcode');
+      qrContainer.innerHTML = '';
+      if(res.data.qr_image) {
+        const img = document.createElement('img');
+        img.src = res.data.qr_image;
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        qrContainer.appendChild(img);
+      }
+      
+      startRenewPaymentTimer();
+      startRenewCheckInterval();
+      
+    } else {
+      showAlert('Gagal', res.data.error || 'Terjadi kesalahan sistem', 'error');
+    }
+  } catch(error) {
+    showAlert('Error', 'Gagal terhubung ke server', 'error');
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
+
+function startRenewPaymentTimer() {
+  renewPaymentTimeLeft = 300;
+  updateRenewCountdownDisplay();
+  if(renewPaymentCountdownInterval) clearInterval(renewPaymentCountdownInterval);
+  renewPaymentCountdownInterval = setInterval(() => {
+    renewPaymentTimeLeft--;
+    updateRenewCountdownDisplay();
+    if(renewPaymentTimeLeft <= 0) {
+      clearInterval(renewPaymentCountdownInterval);
+      expireRenewPayment();
+    }
+  }, 1000);
+}
+
+function updateRenewCountdownDisplay() {
+  const mins = Math.floor(renewPaymentTimeLeft / 60).toString().padStart(2, '0');
+  const secs = (renewPaymentTimeLeft % 60).toString().padStart(2, '0');
+  const display = document.getElementById('renewCountdownDisplay');
+  if(display) display.textContent = `${mins}:${secs}`;
+}
+
+function stopRenewPaymentTimer() {
+  if(renewPaymentCountdownInterval) clearInterval(renewPaymentCountdownInterval);
+}
+
+function expireRenewPayment() {
+  showToast('Waktu pembayaran habis. Transaksi dibatalkan.', 'error');
+  resetRenewModal();
+  if(currentRenewSessionId) {
+    axios.post('/api/cancel-payment', { order_id: currentRenewSessionId }).catch(() => {});
+  }
+}
+
+function startRenewCheckInterval() {
+  let attempts = 0;
+  const interval = setInterval(async () => {
+    attempts++;
+    if(attempts > 300) { clearInterval(interval); return; }
+    
+    try {
+      const res = await axios.get('/api/check-payment', { 
+        params: { order_id: currentRenewSessionId } 
+      });
+      
+      if(res.data.success && res.data.transaction?.status === 'completed') {
+        clearInterval(interval);
+        stopRenewPaymentTimer();
+        
+        if(res.data.panel_data) {
+          showRenewSuccess(res.data.panel_data);
+        } else {
+          showToast('Pembayaran diterima! Memperpanjang server...', 'success');
+          setTimeout(() => {
+            showRenewSuccess({
+              username: currentRenewData.username,
+              server_id: currentRenewData.server_id,
+              added_days: currentRenewData.days,
+              new_expiry: new Date(Date.now() + (currentRenewData.days * 24 * 60 * 60 * 1000)).toISOString()
+            });
+          }, 2000);
+        }
+      }
+    } catch(e){}
+  }, 3000);
+}
+
+async function manualCheckRenewPayment() {
+  const btn = document.getElementById('manualCheckRenewBtn');
+  const loader = document.getElementById('checkingRenewPayment');
+  btn.classList.add('hidden');
+  loader.classList.remove('hidden');
+
+  try {
+    const res = await axios.post('/api/manual-check', {
+      order_id: currentRenewSessionId
+    });
+
+    if(res.data.success) {
+      if(res.data.transaction?.status === 'completed') {
+        stopRenewPaymentTimer();
+        
+        if(res.data.panel_data) {
+          showRenewSuccess(res.data.panel_data);
+        } else {
+          showToast('Pembayaran berhasil! Memperpanjang server...', 'success');
+          setTimeout(() => {
+            showRenewSuccess({
+              username: currentRenewData.username,
+              server_id: currentRenewData.server_id,
+              added_days: currentRenewData.days,
+              new_expiry: new Date(Date.now() + (currentRenewData.days * 24 * 60 * 60 * 1000)).toISOString()
+            });
+          }, 2000);
+        }
+      } else {
+        showToast('Pembayaran belum ditemukan', 'warning');
+      }
+    } else {
+      showToast(res.data.error || 'Gagal memeriksa status', 'error');
+    }
+  } catch(e) { 
+  }
+  
+  btn.classList.remove('hidden');
+  loader.classList.add('hidden');
+}
+
+function downloadRenewQRIS() {
+  const img = document.querySelector("#renewQrcode img");
+  if(!img) return showToast("QR Code tidak tersedia", "error");
+  const link = document.createElement("a");
+  link.href = img.src;
+  link.download = `QRIS-RENEW-${currentRenewSessionId}.png`;
+  link.click();
+}
+
+function confirmCancelRenewPayment() {
+  showAlert(
+    'Batalkan Transaksi?',
+    'Transaksi perpanjangan yang dibatalkan tidak dapat dipulihkan. Lanjutkan?',
+    'warning',
+    async () => {
+      stopRenewPaymentTimer();
+      try {
+        await axios.post('/api/cancel-payment', { order_id: currentRenewSessionId });
+        resetRenewModal();
+        showToast('Transaksi dibatalkan', 'info');
+      } catch(e) { 
+        resetRenewModal();
+      }
+    }
+  );
+}
+
+function showRenewSuccess(data) {
+  document.getElementById('renewPaymentSection').classList.add('hidden');
+  document.getElementById('renewSuccessSection').classList.remove('hidden');
+  
+  document.getElementById('renewSuccessUsername').textContent = data.username || currentRenewData.username;
+  document.getElementById('renewSuccessServerId').textContent = data.server_id || currentRenewData.server_id;
+  document.getElementById('renewSuccessDays').textContent = `${data.added_days || currentRenewData.days} hari`;
+  
+  const expiryDate = data.new_expiry ? new Date(data.new_expiry).toLocaleString('id-ID') : 
+    new Date(Date.now() + (currentRenewData.days * 24 * 60 * 60 * 1000)).toLocaleString('id-ID');
+  document.getElementById('renewSuccessExpiry').textContent = expiryDate;
+  
+  updateHistoryWithPanelData(currentRenewSessionId, data);
+}
+</script>
+</body>
+</html>
